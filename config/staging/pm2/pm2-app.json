@@ -1,0 +1,15 @@
+{
+    "apps": [{
+        "name"              : "%APP_NAME%",
+        "script"            : "%APP_PATH%/www/htdocs/main.js",
+        "log_date_format"   : "YYYY-MM-DD HH:mm Z",
+        "out_file"          : "%APP_PATH%/log/%APP_NAME%-out.log",
+        "error_file"        : "%APP_PATH%/log/%APP_NAME%-err.log",
+        "min_uptime"        : "200s",               // 200 seconds, defaults to 1000
+        "max_restarts"      : 10,                   // defaults to 15
+        "cron_restart"      : "15 4 * * *",         // restart at 4:15 am every day
+        "watch"             : false,
+        "ignore_watch"      : ["[\\/\\\\]\\./", "node_modules"],    // unused
+        "merge_logs"        : false
+    }]
+}
