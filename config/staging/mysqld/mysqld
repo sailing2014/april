@@ -1,0 +1,66 @@
+#!/bin/bash
+#chkconfig: 2345 52 63
+#description: start mysqld
+username=%APP_NAME%
+userid=%MYSQL_PORT%
+
+
+
+function status()
+{
+    retval=$(ps aux |grep mysql |grep -cw "port=${userid}")
+}
+
+function start()
+{
+    status
+    if [ ${retval} -ne 0 ]
+    then
+        echo "That Mysqld ${userid} is running"
+        return 0
+    fi
+    mysqld_safe --defaults-file=/home/${username}/conf/mysqld/my.cnf &
+    sleep 5
+    status     
+    if [ ${retval} -eq 0 ]
+    then
+        echo "Start mysqld ${userid} failed"
+        return 1
+    fi
+
+}
+
+function stop()
+{
+    status
+    if [ ${retval} -eq 0 ]
+    then
+        echo "Mysqld has been stop"
+        return 0
+    fi
+    ps aux |grep mysql |grep -w "/home/${username}" |grep -v 'grep' | awk -F' ' '{print $2}' |xargs kill
+    sleep 5
+    status
+    if [ ${retval} -ne 0 ]
+    then
+        echo "Stop mysqld failed"
+        return 1
+    fi
+}
+
+
+case $1 in
+    start )
+    start
+    ;;
+    stop )
+    stop
+    ;;
+    restart)
+    stop
+    start
+    ;;
+    * )
+    echo "Usage: $0 {start | stop | restart}"
+    ;;
+esac
